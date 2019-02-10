@@ -16,13 +16,15 @@ void *trabalho(void *params) // corpo de thread
 {
   struct contexto *ctx = params;
   printf("Thread %d started\n", ctx->flag);
-  while (i <= 29) // laço de preenchimento do array
+  while (i < 30) // laço de preenchimento do array
   {
     // laço busy-wait
     while (flags[ctx->flag])
     {
       // noop
     }
+
+    printf("Thread %d to write on %d\n", ctx->flag, i);
     // escrever no array
     array[i++] = ctx->to_write;
     // subir a própria flag
