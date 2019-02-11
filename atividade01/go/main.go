@@ -59,11 +59,8 @@ func main() {
 	flags[0] <- 1
 
 	<-end
-	fmt.Printf("out\n")
 	<-end
-	fmt.Printf("out\n")
 	<-end
-	fmt.Printf("out\n")
 
 	fmt.Printf("Resultado:\n")
 	printArray()

@@ -46,7 +46,7 @@ void print_array()
 
 int main(int argc, char **argv) // ponto de entrada da aplicação
 {
-  memset(array, ' ', 30 * sizeof(char)); // zerando o array
+  memset(array, '?', 30 * sizeof(char)); // zerando o array
   // printf("Estado inicial:\n");
   // print_array();
 
