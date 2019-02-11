@@ -16,7 +16,7 @@ void *trabalho(void *params) // corpo de thread
 {
   struct contexto *ctx = params;
   printf("Thread %d started\n", ctx->flag);
-  while (i < 30) // laço de preenchimento do array
+  while (i < 30) // laço de preenchimento colaborativo do array
   {
     // laço busy-wait
     while (flags[ctx->flag])
@@ -47,8 +47,6 @@ void print_array()
 int main(int argc, char **argv) // ponto de entrada da aplicação
 {
   memset(array, '?', 30 * sizeof(char)); // zerando o array
-  // printf("Estado inicial:\n");
-  // print_array();
 
   pthread_t thread_a, thread_b, thread_c;
 
@@ -67,6 +65,7 @@ int main(int argc, char **argv) // ponto de entrada da aplicação
   b.to_write = 'b';
   c.to_write = 'c';
 
+  // começando tudo
   pthread_create(&thread_a, NULL, trabalho, &a);
   pthread_create(&thread_b, NULL, trabalho, &b);
   pthread_create(&thread_c, NULL, trabalho, &c);

@@ -2,21 +2,21 @@ package main
 
 import "fmt"
 
-var i int
-var array [30]string
-var flags [3]chan int
-var end chan int
+var i int             // índice do array
+var array [30]string  // array de 'caracteres'
+var flags [3]chan int // canais de sincronização
+var end chan int      // canal para join dos trabalhos finalizados
 
-type contexto struct {
+type contexto struct { // estrutura contexto para as três linhas de execução
 	flag    int
 	next    int
 	max     int
 	toWrite string
 }
 
-func trabalho(ctx *contexto) {
+func trabalho(ctx *contexto) { // corpo de 'thread'
 	fmt.Printf("Thread %+v started\n", ctx)
-	for i <= ctx.max {
+	for i <= ctx.max { // laço de preenchimento colaborativo do array
 		<-flags[ctx.flag]
 		fmt.Printf("Thread %d to write [%s] on %d\n", ctx.flag, ctx.toWrite, i)
 		array[i] = ctx.toWrite
@@ -37,11 +37,13 @@ func printArray() {
 	fmt.Printf("\n")
 }
 
-func main() {
+func main() { // ponto de entrada da aplicação
 	i = 0
-	for j := 0; j < 30; j++ {
+	for j := 0; j < 30; j++ { // zerando o array
 		array[j] = "?"
 	}
+
+	// a correta configuração do contexto é importante
 	flags[0] = make(chan int)
 	flags[1] = make(chan int)
 	flags[2] = make(chan int)
@@ -55,7 +57,7 @@ func main() {
 	go trabalho(&ctx2)
 	go trabalho(&ctx3)
 
-	// start everything
+	// começando tudo
 	flags[0] <- 1
 
 	<-end
