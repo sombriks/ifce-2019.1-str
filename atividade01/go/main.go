@@ -4,34 +4,35 @@ import "fmt"
 
 var i int
 var array [30]string
-var flags [3]int
+var flags [3]chan int
+var end chan int
 
 type contexto struct {
 	flag    int
 	next    int
+	max     int
 	toWrite string
 }
 
-func trabalho(ctx contexto) {
+func trabalho(ctx *contexto) {
 	fmt.Printf("Thread %+v started\n", ctx)
-	for i < 30 {
-		// busy-wait
-		for flags[ctx.flag] == 1 {
-
-		}
-		fmt.Printf("Thread %d to write on %d\n", ctx.next, i)
-
+	for i <= ctx.max {
+		<-flags[ctx.flag]
+		fmt.Printf("Thread %d to write [%s] on %d\n", ctx.flag, ctx.toWrite, i)
 		array[i] = ctx.toWrite
 		i++
-		flags[ctx.flag] = 1
-		flags[ctx.next] = 0
+		if i >= ctx.max {
+			end <- 1
+		}
+		flags[ctx.next] <- 1
 	}
 	fmt.Printf("Thread %d exiting\n", ctx.next)
+	end <- 1
 }
 
 func printArray() {
 	for i := 0; i < 30; i++ {
-		fmt.Printf("%s ", array[i])
+		fmt.Printf("%s,", array[i])
 	}
 	fmt.Printf("\n")
 }
@@ -39,23 +40,30 @@ func printArray() {
 func main() {
 	i = 0
 	for j := 0; j < 30; j++ {
-		array[j] = " "
+		array[j] = "?"
 	}
-	flags[0] = 0
-	flags[1] = 1
-	flags[2] = 1
+	flags[0] = make(chan int)
+	flags[1] = make(chan int)
+	flags[2] = make(chan int)
+	end = make(chan int)
 
-	ctx1 := contexto{flag: 0, next: 1, toWrite: "a"}
-	ctx2 := contexto{flag: 1, next: 2, toWrite: "b"}
-	ctx3 := contexto{flag: 2, next: 0, toWrite: "c"}
+	ctx1 := contexto{flag: 0, next: 1, max: 27, toWrite: "a"}
+	ctx2 := contexto{flag: 1, next: 2, max: 28, toWrite: "b"}
+	ctx3 := contexto{flag: 2, next: 0, max: 29, toWrite: "c"}
 
-	go trabalho(ctx1)
-	go trabalho(ctx2)
-	go trabalho(ctx3)
+	go trabalho(&ctx1)
+	go trabalho(&ctx2)
+	go trabalho(&ctx3)
 
-	// busy-wait
-	for i < 30 {
-	}
+	// start everything
+	flags[0] <- 1
+
+	<-end
+	fmt.Printf("out\n")
+	<-end
+	fmt.Printf("out\n")
+	<-end
+	fmt.Printf("out\n")
 
 	fmt.Printf("Resultado:\n")
 	printArray()
