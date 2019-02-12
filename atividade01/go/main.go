@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 var i int             // índice do array
 var array [30]string  // array de 'caracteres'
@@ -63,6 +66,8 @@ func main() { // ponto de entrada da aplicação
 	<-end
 	<-end
 	<-end
+
+	time.Sleep(time.Second)
 
 	fmt.Printf("Resultado:\n")
 	printArray()
