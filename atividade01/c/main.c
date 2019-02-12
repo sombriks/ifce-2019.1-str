@@ -25,7 +25,7 @@ void *trabalho(void *params) // corpo de thread
       // noop
     }
 
-    printf("Thread %d to write %c on %d\n", ctx->flag, ctx->to_write, i);
+    printf("Thread %d to write [%c] on %d\n", ctx->flag, ctx->to_write, i);
     // escrever no array
     array[i++] = ctx->to_write;
     // subir a própria flag
