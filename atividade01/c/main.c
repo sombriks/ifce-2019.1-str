@@ -9,14 +9,15 @@ struct contexto           // estrutura contexto para as três linhas de execuç�
 {
   int flag; // qual a flag da thread
   int next; // qual a flag seguinte a thread deve baixar
-  char to_write;
+  char to_write; // qual letra escrever
+  int max; // índice máximo do cursor
 };
 
 void *trabalho(void *params) // corpo de thread
 {
   struct contexto *ctx = params;
   printf("Thread %d started\n", ctx->flag);
-  while (i < 30) // laço de preenchimento colaborativo do array
+  while (i <= ctx->max) // laço de preenchimento colaborativo do array
   {
     // laço busy-wait
     while (flags[ctx->flag])
@@ -60,6 +61,10 @@ int main(int argc, char **argv) // ponto de entrada da aplicação
   a.next = 1;
   b.next = 2;
   c.next = 0;
+
+  a.max = 27;
+  b.max = 28;
+  c.max = 29;
 
   a.to_write = 'a';
   b.to_write = 'b';
